@@ -18,17 +18,18 @@ import '@formatjs/intl-datetimeformat/locale-data/fr';
 
 import 'react-native-gesture-handler';
 import { AppRegistry } from 'react-native';
+import { I18nextProvider } from 'react-i18next';
 import App from './App';
 import { name as appName } from './app.json';
 import i18n from './src/i18n/i18n';
 import store from './src/redux/store';
 import { Provider } from 'react-redux';
 
-// const ReduxApp = () => (
-//     <Provider store={store}>
-//         <App />
-//     </Provider>
-// );
+const ReduxApp = () => (
+    <I18nextProvider i18n={i18n}>
+        <App />
+    </I18nextProvider>
+);
 
 
-AppRegistry.registerComponent(appName, () => App);
+AppRegistry.registerComponent(appName, () => ReduxApp);
