@@ -1,11 +1,16 @@
-// // store.js
-// import { createStore, applyMiddleware } from 'redux';
-// import thunk from 'redux-thunk';
-// import rootReducer from './reducers'; // Assuming you have a rootReducer combining all your reducers
+import { configureStore } from '@reduxjs/toolkit';
+import getProductSlice from './slice/getProductSlice';
+import authSlice from './slice/authSlice';
+import notificationSlice from './slice/notificationSlice';
+import sportsSlice from './slice/sportsSlice';
+import languageSlice from './slice/languageSlice';
 
-// const middleware = [thunk]; // Add other middleware here if needed
-
-// const store = createStore(
-//     rootReducer, (applyMiddleware(...middleware))
-// );
-// export default store;
+export const store = configureStore({
+  reducer: {
+    productData: getProductSlice,
+    auth: authSlice,
+    notifications: notificationSlice,
+    sports: sportsSlice,
+    language: languageSlice
+  },
+});

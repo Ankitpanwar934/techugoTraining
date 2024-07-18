@@ -15,7 +15,8 @@ const FONTS =
 const COLOR = {
     D3643BB: '#3643bb',
     DFFFFFF: '#FFFFFF',
-    DF4F4F4: '#F4F4F4'
+    DF4F4F4: '#F4F4F4',
+    D000000: '#000000'
 }
 
 

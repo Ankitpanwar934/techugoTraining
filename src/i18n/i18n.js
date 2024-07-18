@@ -5,6 +5,7 @@ import { initReactI18next } from 'react-i18next';
 import translationEN from '../locales/en/translation.json';
 import translationFR from '../locales/fr/translation.json';
 import translationHI from '../locales/hi/translation.json'
+import { store } from '../redux/store';
 
 // Set up i18next
 i18n
@@ -22,5 +23,10 @@ i18n
       escapeValue: false, // React already escapes by default
     },
   });
+
+store.subscribe(() => {
+  const language = store.getState().language.language;
+  i18n.changeLanguage(language);
+});
 
 export default i18n;

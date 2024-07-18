@@ -1,93 +1,114 @@
-import { View, Text, SafeAreaView, Image, TouchableOpacity, StyleSheet, TextInput, ScrollView } from 'react-native'
-import React from 'react'
+import { View, Text, SafeAreaView, Image, TouchableOpacity, StyleSheet, TextInput, ScrollView, ActivityIndicator, } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import Carousell from '../components/Carousell'
 import { COLOR } from '../constant/styles'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchItems } from '../redux/slice/getProductSlice'
+import { useTranslation } from 'react-i18next'
 
+const Home = ({ navigation }) => {
+  const dispatch = useDispatch()
+  const { items, loading, error } = useSelector((state) => state.productData);
 
-let typeData1 = [
-  { img: require('../assets/images/d1.png'), title: 'Men' },
-  { img: require('../assets/images/d2.png'), title: 'Women' },
-  { img: require('../assets/images/d3.png'), title: 'Kids' },
-  { img: require('../assets/images/d4.png'), title: 'Shoes' },
-  { img: require('../assets/images/d5.png'), title: 'Summer Collection' },
-  { img: require('../assets/images/d6.png'), title: 'Sports Accessories' },
-  { img: require('../assets/images/d7.png'), title: 'Sale' },
-  { img: require('../assets/images/d8.png'), title: 'Sports Equipment' }
-]
+  const { t } = useTranslation()
 
-let typeData2 = [
-  { img: require('../assets/images/d9.png'), title: 'Men T-Shirt' },
-  { img: require('../assets/images/d10.png'), title: 'Men Shorts' },
-  { img: require('../assets/images/d11.png'), title: 'Men Track Pents' },
-  { img: require('../assets/images/d12.png'), title: 'Men Trousers' },
-  { img: require('../assets/images/d13.png'), title: 'Summer Collection' },
-  { img: require('../assets/images/d14.png'), title: 'Sports Accessories' },
-  { img: require('../assets/images/d15.png'), title: 'Sale' },
-  { img: require('../assets/images/d16.png'), title: 'Sports Equipment' }
-]
+  const openModal = () => {
+    setModalVisible(true)
+  }
 
-const Home = () => {
+  useEffect(() => {
+    dispatch(fetchItems());
+  }, [dispatch])
+
+  if (loading) {
+    return <ActivityIndicator size="large" />;
+  }
+
+  if (error) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Error: {error}</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <SafeAreaView>
-        <View style={styles.mainContainer}>
-          <Image style={styles.logo} source={require('../assets/images/decathelon.png')} />
-          <View style={styles.addressView}>
-            <Text style={styles.deliveryText}>{`Delivery Location `}</Text>
-            <Text style={styles.pinCode}>{`560001`}</Text>
-            <TouchableOpacity style={styles.pinChangeContainer} >
-              <Text style={styles.pinChange}>{`CHANGE`}</Text>
-            </TouchableOpacity>
+      <SafeAreaView style={{ flex: 1 }}>
+        {items.length === 0 ? (
+          <View style={styles.center}>
+            <Text>No items found.</Text>
           </View>
-        </View>
-        <View style={styles.searchMainContainer}>
-          <View style={styles.searchContainer}>
-            <View style={styles.searchView}>
-              <Image style={{ height: 25, width: 25 }} source={require('../assets/images/search.png')} />
-              <TextInput placeholder='Search for "Footbal' />
-            </View>
-            <Image style={styles.imagesForSCWV} source={require('../assets/images/mic.png')} />
-          </View>
-          <Image style={styles.imagesForSCWV} source={require('../assets/images/heart.png')} />
-          <Image style={styles.imagesForSCWV} source={require('../assets/images/cart.png')} />
-        </View>
-        <View style={styles.offerViewMain}>
-          <View style={styles.offerView}>
-            <Text style={[styles.offerText, { fontWeight: '700', fontSize: 15 }]}>{`FREE`} </Text>
-            <Text style={styles.offerText}>{`delivery on orders worth`} </Text>
-            <Text style={[styles.offerText, { fontWeight: '700', fontSize: 15 }]}>{`₹2999/-`} </Text>
-            <Text style={styles.offerText}>{`and above`}</Text>
-          </View>
-          <TouchableOpacity>
-            <Image style={[styles.closeImage]} source={require('../assets/images/close.png')} />
-          </TouchableOpacity>
-        </View>
-        <ScrollView>
-
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ paddingTop: 20, width: '100%' }}>
-            <View style={{ flexDirection: 'row', }} >
-              {typeData1.map((item, index) => (
-                <View key={index} style={{ justifyContent: 'center', alignItems: 'center', marginHorizontal: 10 }}>
-                  <Image style={{ width: 80, height: 80, }} source={item.img} />
-                  <Text style={{ marginTop: 10, width: 80, textAlign: 'center' }} numberOfLines={2}>{item.title}</Text>
-                </View>
-              ))}
-            </View>
-          </ScrollView>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ paddingTop: 20, width: '100%' }}>
-            <View style={{ flexDirection: 'row', }} >
-              {typeData2.map((item, index) => (
-                <View key={index} style={{ justifyContent: 'center', alignItems: 'center', marginHorizontal: 10 }}>
-                  <Image style={{ width: 80, height: 80, }} source={item.img} />
-                  <Text style={{ marginTop: 10, width: 80, textAlign: 'center' }} numberOfLines={2}>{item.title}</Text>
-                </View>
-              ))}
-            </View>
-          </ScrollView>
+        ) : (
           <View>
-            <Carousell />
+            <View style={styles.mainContainer}>
+              <Image style={styles.logo} source={require('../assets/images/decathelon.png')} />
+              <View style={styles.addressView}>
+                <Text style={styles.deliveryText}>{t(`Delivery`)}</Text>
+                <Text style={styles.pinCode}>{`560001`}</Text>
+                <TouchableOpacity style={styles.pinChangeContainer} >
+                  <Text style={styles.pinChange}>{`CHANGE`}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={styles.searchMainContainer}>
+              <View style={styles.searchContainer}>
+                <View style={styles.searchView}>
+                  <Image style={{ height: 25, width: 25 }} source={require('../assets/images/search.png')} />
+                  <TextInput placeholder='Search for "Footbal' />
+                </View>
+                <Image style={styles.imagesForSCWV} source={require('../assets/images/mic.png')} />
+              </View>
+              <TouchableOpacity onPress={() => {
+                navigation.navigate('Wish')
+              }}>
+                <Image style={styles.imagesForSCWV} source={require('../assets/images/heart.png')} />
+              </TouchableOpacity>
+              <Image style={styles.imagesForSCWV} source={require('../assets/images/cart.png')} />
+            </View>
+            <View style={styles.offerViewMain}>
+              <View style={styles.offerView}>
+                <Text style={[styles.offerText, { fontWeight: '700', fontSize: 15 }]}>{`FREE`} </Text>
+                <Text style={styles.offerText}>{`delivery on orders worth`} </Text>
+                <Text style={[styles.offerText, { fontWeight: '700', fontSize: 15 }]}>{`₹2999/-`} </Text>
+                <Text style={styles.offerText}>{`and above`}</Text>
+              </View>
+              <TouchableOpacity>
+                <Image style={[styles.closeImage]} source={require('../assets/images/close.png')} />
+              </TouchableOpacity>
+            </View>
+            <ScrollView style={{ marginBottom: 50 }}>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ paddingTop: 20, width: '100%' }}>
+                {items.map((item) => (
+                  <View key={item.id} style={{ flexDirection: 'row', }} >
+                    <TouchableOpacity onPress={() => {
+                      openModal()
+                    }}>
+                      <View key={item.id} style={{ justifyContent: 'center', alignItems: 'center', marginHorizontal: 10 }}>
+                        <Image style={{ width: 100, height: 100, }} source={{ uri: item.image }} />
+                        <Text style={{ marginTop: 10, width: 80, textAlign: 'center' }} numberOfLines={2}>{item.title}</Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+
+                ))}
+              </ScrollView>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ paddingTop: 20, width: '100%' }}>
+                {items.map((item) => (
+                  <View key={item.id} style={{ flexDirection: 'row', }} >
+                    <View key={item.id} style={{ justifyContent: 'center', alignItems: 'center', marginHorizontal: 10 }}>
+                      <Image style={{ width: 100, height: 100, }} source={{ uri: item.image }} />
+                      <Text style={{ marginTop: 10, width: 80, textAlign: 'center' }} numberOfLines={2}>{item.title}</Text>
+                    </View>
+                  </View>
+                ))}
+              </ScrollView>
+              <View >
+                <Carousell items={items} />
+              </View>
+            </ScrollView>
           </View>
-        </ScrollView>
+        )}
       </SafeAreaView>
     </View>
   )

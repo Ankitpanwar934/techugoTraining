@@ -1,17 +1,26 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import BottomNavigator from './BottomNavigator'
-import { createDrawerNavigator } from '@react-navigation/drawer'
+import React from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import Login from '../screens/Login';
+import DrawerNavigator from './DrawerNavigator';
+import { useSelector } from 'react-redux';
 
+const Stack = createNativeStackNavigator();
 
-const Drawer = createDrawerNavigator()
 
 const MainNavigator = () => {
-    return (
-        <Drawer.Navigator screenOptions={{}}>
-            <Drawer.Screen name="Home" component={BottomNavigator} />
-        </Drawer.Navigator>
-    )
-}
+    const {token, user} = useSelector(state => state.auth)
 
-export default MainNavigator
+    console.log(token)
+
+    return (
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+            {!token ?
+                <Stack.Screen name="Login" component={Login} /> :
+                <Stack.Screen name="Main" component={DrawerNavigator} initialParams={{user}} />
+            }
+        </Stack.Navigator>
+
+    )
+};
+
+export default MainNavigator;
